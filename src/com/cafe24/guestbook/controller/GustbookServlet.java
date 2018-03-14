@@ -2,8 +2,6 @@ package com.cafe24.guestbook.controller;
 
 import java.io.IOException;
 import java.util.List;
-
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -12,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.cafe24.guestbook.dao.GuestbookDao;
 import com.cafe24.guestbook.vo.GuestbookVo;
+import com.cafe24.mvc.util.WebUtil;
 
 @WebServlet("/gb")
 public class GustbookServlet extends HttpServlet {
@@ -23,8 +22,7 @@ public class GustbookServlet extends HttpServlet {
 		String actionName = request.getParameter( "a" );
 		
 		if( "deleteform".equals( actionName ) ) {
-			RequestDispatcher rd = request.getRequestDispatcher( "/WEB-INF/views/deleteform.jsp" );
-			rd.forward( request, response );
+			WebUtil.forward(request, response, "/WEB-INF/views/deleteform.jsp" );
 		} else if( "delete".equals( actionName ) ) {
 			String no = request.getParameter( "no" );
 			String password = request.getParameter( "password" );
@@ -34,9 +32,8 @@ public class GustbookServlet extends HttpServlet {
 			vo.setPassword( password );
 			
 			new GuestbookDao().delete( vo );
-			
-			response.sendRedirect( request.getContextPath() + "/gb" );
-		
+	
+			WebUtil.redirect(request, response, "/guestbook2/gb" );
 		} else if( "add".equals( actionName ) ) {
 			String name = request.getParameter( "name" );
 			String password = request.getParameter( "pass" );
@@ -49,22 +46,19 @@ public class GustbookServlet extends HttpServlet {
 			
 			new GuestbookDao().insert( vo );
 			
-			response.sendRedirect( request.getContextPath() + "/gb" );
-			
+			WebUtil.redirect(request, response, "/guestbook2/gb" );
 		} else {
 			/* default 요청 처리 (list) */
 			GuestbookDao dao = new GuestbookDao();
 			List<GuestbookVo> list = dao.getList();
 			
 			request.setAttribute( "list", list );
-			
-			RequestDispatcher rd = request.getRequestDispatcher( "/WEB-INF/views/index.jsp" );
-			rd.forward( request, response );
+
+			WebUtil.forward(request, response, "/WEB-INF/views/index.jsp" );
 		}
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doGet(request, response);
 	}
-
 }
