@@ -1,16 +1,16 @@
 package com.cafe24.guestbook.controller;
 
 import java.io.IOException;
-import java.util.List;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.cafe24.guestbook.dao.GuestbookDao;
-import com.cafe24.guestbook.vo.GuestbookVo;
-import com.cafe24.mvc.util.WebUtil;
+import com.cafe24.guestbook.action.GuestbookActionFactory;
+import com.cafe24.mvc.action.AbstractActionFactory;
+import com.cafe24.mvc.action.Action;
 
 @WebServlet("/gb")
 public class GustbookServlet extends HttpServlet {
@@ -20,7 +20,11 @@ public class GustbookServlet extends HttpServlet {
 		request.setCharacterEncoding( "utf-8" );
 		
 		String actionName = request.getParameter( "a" );
+		AbstractActionFactory af = new GuestbookActionFactory();
+		Action action = af.getAction(actionName);
+		action.execute(request, response);
 		
+		/*
 		if( "deleteform".equals( actionName ) ) {
 			WebUtil.forward(request, response, "/WEB-INF/views/deleteform.jsp" );
 		} else if( "delete".equals( actionName ) ) {
@@ -48,7 +52,6 @@ public class GustbookServlet extends HttpServlet {
 			
 			WebUtil.redirect(request, response, "/guestbook2/gb" );
 		} else {
-			/* default 요청 처리 (list) */
 			GuestbookDao dao = new GuestbookDao();
 			List<GuestbookVo> list = dao.getList();
 			
@@ -56,6 +59,7 @@ public class GustbookServlet extends HttpServlet {
 
 			WebUtil.forward(request, response, "/WEB-INF/views/index.jsp" );
 		}
+		*/
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
